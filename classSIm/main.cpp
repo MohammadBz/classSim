@@ -3,12 +3,54 @@
 #include "sample\student.h"
 #include "sample\human.h"
 #include "sample\professor.h"
+#include "signUpAndLogin.h"
 
 using namespace std;
 
+void validPathMenu(string &path)
+{
+  while (path.compare("1") != 0 && path.compare("2") != 0 && path.compare("3") != 0)
+  {
+    cout << "Wrong input!\n Please just select 1 or 2 or 3\n";
+    getline(cin, path);
+  }
+}
+void menuText()
+{
+  cout << "-----1-Sign UP\n-----2-Login\n-----3-Exit\n--------------------\nPlease select by using number\n";
+}
+
+
+void menu()
+{
+  cout << "--------------------\n-----Welcome !\n";
+  menuText();
+  string path;
+  getline(cin, path);
+  validPathMenu(path);
+  while (path.compare("3") != 0)
+  {
+    if (path.compare("1") == 0)
+    {
+      signUp();
+    }
+    else if (path.compare("2") == 0)
+    {
+      login();
+    }
+    else
+    {
+      return;
+    }
+    menuText();
+    getline(cin, path);
+    validPathMenu(path);
+  } // end while
+}
+
 int main()
 {
-      student ali;
+  /*     student ali;
       ali.setfirstName("ali");
       ali.setLastName("ghol");
       student popo;
@@ -24,8 +66,7 @@ int main()
       firstClass.addStudent(popo);
       firstClass.showStudentList();
       ali.addClass(firstClass.getlectureName());
-      ali.showClassList();
-
-
-    return 0;
+      ali.showClassList(); */
+  menu();
+  return 0;
 }
