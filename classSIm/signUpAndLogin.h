@@ -1,6 +1,9 @@
 #include <iostream>
 
+
 using namespace std;
 
-void signUp();
-void login();
+class human;
+
+human signUp();
+human login();

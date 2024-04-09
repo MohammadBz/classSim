@@ -1,7 +1,7 @@
 #include <iostream>
 #pragma once
 #include "human.h"
-#define Max_Size_Class_T 15
+#define Max_Size_Class_T 30
 
 using namespace std;
 
@@ -14,8 +14,13 @@ private:
 public:
     professor();
     string *getListClass();
-    void addClass(string input);
+    void addClassName(string input);
     int getClassCounter();
     void setClassCounter(int input);
     void showClassList();
+    void loadClassName(string id);
+    void writeClassName(string id);
+    void createClass();
+    void classMenu(string id);
+    void chooseClass();
 };

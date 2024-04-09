@@ -98,63 +98,7 @@ void createUserDataFile(human person)
     outputFile.close();
     outputFileClass.close();
 }
-bool loadUserData(string &id, human &person)
-{
-    string filePath = "userDataBase\\" + id + "\\UserData.txt";
-    ifstream inputFile(filePath);
-    if (!inputFile.is_open())
-    {
-        return false;
-    }
 
-    string line;
-    if (getline(inputFile, line))
-    {
-        stringstream ss(line);
-        string attribute;
-
-        while (getline(ss, attribute, ','))
-        {
-            size_t colonPos = attribute.find(':');
-            if (colonPos != string::npos)
-            {
-                string attr = attribute.substr(0, colonPos);
-                string value = attribute.substr(colonPos + 1);
-
-                // Remove leading and trailing spaces from attribute and value
-                attr.erase(remove(attr.begin(), attr.end(), ' '), attr.end());
-                value.erase(remove(value.begin(), value.end(), ' '), value.end());
-
-                if (attr == "status")
-                {
-                    person.setStatus(value);
-                }
-                else if (attr == "firstName")
-                {
-                    person.setfirstName(value);
-                }
-                else if (attr == "lastName")
-                {
-                    person.setLastName(value);
-                }
-                else if (attr == "ID")
-                {
-                    person.setId(value);
-                }
-                else if (attr == "Password")
-                {
-                    person.setPassword(value);
-                }
-                else if (attr == "Role")
-                {
-                    person.setRole(value);
-                }
-            }
-        }
-    }
-    inputFile.close();
-    return true;
-}
 string getPath()
 {
     string path;
@@ -186,7 +130,8 @@ bool isValidPass(string humanPass)
     }
     return true;
 }
-void signUp()
+
+human signUp()
 {
     human newPerson;
     string temp;
@@ -225,38 +170,53 @@ void signUp()
     newPerson.setId(idGenerator(temp));
     newPerson.setStatus("active");
     createUserDataFile(newPerson);
-    cout<<"Welcome "<<newPerson.getFirstName()<<" "<<newPerson.getLastName()<<endl;
+    cout << "Welcome " << newPerson.getFirstName() << " " << newPerson.getLastName() << endl;
+    return newPerson;
 }
 // status:<>,firstName:<>,LastName:<>,ID:<>,Password:<>,Role:<>,
-
-void login()
+void checkAdmin()
+{
+    cout << "Please enter your password:\n";
+    string temp;
+    getline(cin, temp);
+    if(temp.compare("admin123")==0){
+        
+    }
+}
+human login()
 {
     human newPerson;
+    human fail;
+    fail.setRole("no");
     cout << "please enter your ID:\n";
     string temp;
     getline(cin, temp);
+    if (temp.compare("admin") == 0)
+    {
+    }
     while (checkId(temp) == false)
     {
         cout << "ID only contain numbers\n";
         getline(cin, temp);
     }
-    if (loadUserData(temp, newPerson) == false)
+    if (newPerson.loadUserData(temp) == false)
     {
 
         cout << "There is no such ID in our dataBase\nDo you want to try again(select 1) or return to menu(select 2)?\n";
         string path = getPath();
         if (path.compare("1") == 0)
         {
-            login();
-            return;
+            human alo = login();
+            return alo;
         }
         else
-            return;
-    }                                        // end if
-     // we have that id so we continue and checl the passwords
-     if(isValidPass(newPerson.getPassword())==false){
-        return ;
-     } // if true then the login was succesful
-     cout<<"Welcome "<<newPerson.getFirstName()<<" "<<newPerson.getLastName()<<endl;
-
+            return fail;
+    } // end if
+    // we have that id so we continue and checl the passwords
+    if (isValidPass(newPerson.getPassword()) == false)
+    {
+        return fail;
+    } // if true then the login was succesful
+    cout << "Welcome " << newPerson.getFirstName() << " " << newPerson.getLastName() << endl;
+    return newPerson;
 }

@@ -1,4 +1,8 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <filesystem>
 #include "human.h"
 
 using namespace std;
@@ -51,3 +55,64 @@ string human::getStatus()
 {
     return this->status;
 }
+void human::showPersonDetails(){
+    cout<<"--------------------\nfull name:"<<this->firstName<<" "<<this->lastName<<"\nID:"<<this->id<<"\nYour Role is:"<<this->role<<endl;
+}
+
+bool human::loadUserData(string &id)
+{
+    string filePath = "userDataBase\\" + id + "\\UserData.txt";
+    ifstream inputFile(filePath);
+    if (!inputFile.is_open())
+    {
+        return false;
+    }
+
+    string line;
+    if (getline(inputFile, line))
+    {
+        stringstream ss(line);
+        string attribute;
+
+        while (getline(ss, attribute, ','))
+        {
+            size_t colonPos = attribute.find(':');
+            if (colonPos != string::npos)
+            {
+                string attr = attribute.substr(0, colonPos);
+                string value = attribute.substr(colonPos + 1);
+
+                attr.erase(remove(attr.begin(), attr.end(), ' '), attr.end());
+                value.erase(remove(value.begin(), value.end(), ' '), value.end());
+
+                if (attr == "status")
+                {
+                    this->status=value;
+                }
+                else if (attr == "firstName")
+                {
+                    this->firstName=value;
+                }
+                else if (attr == "lastName")
+                {
+                    this->lastName=value;
+                }
+                else if (attr == "ID")
+                {
+                    this->id=value;
+                }
+                else if (attr == "Password")
+                {
+                   this->password=value;
+                }
+                else if (attr == "Role")
+                {
+                    this->role=value;
+                }
+            }
+        }
+    }
+    inputFile.close();
+    return true;
+}
+

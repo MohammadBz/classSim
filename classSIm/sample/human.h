@@ -27,4 +27,7 @@ public:
     string getRole();
     void setStatus(string input);
     string getStatus();
+    void showPersonDetails();
+    bool loadUserData(string &id);
+
 };

@@ -4,6 +4,8 @@
 #include "sample\human.h"
 #include "sample\professor.h"
 #include "signUpAndLogin.h"
+#include "professorPanel.h"
+#include "studentPanel.h"
 
 using namespace std;
 
@@ -20,9 +22,9 @@ void menuText()
   cout << "-----1-Sign UP\n-----2-Login\n-----3-Exit\n--------------------\nPlease select by using number\n";
 }
 
-
 void menu()
 {
+
   cout << "--------------------\n-----Welcome !\n";
   menuText();
   string path;
@@ -32,11 +34,27 @@ void menu()
   {
     if (path.compare("1") == 0)
     {
-      signUp();
+      human temp = signUp();
+      if (temp.getRole().compare("professor") == 0)
+      {
+        professorMenu(temp);
+      }
+      else if (temp.getRole().compare("student") == 0)
+      {
+        studentMenu(temp);
+      }
     }
     else if (path.compare("2") == 0)
     {
-      login();
+      human temp = login();
+      if (temp.getRole().compare("professor") == 0)
+      {
+        professorMenu(temp);
+      }
+      else if (temp.getRole().compare("student") == 0)
+      {
+        studentMenu(temp);
+      }
     }
     else
     {
