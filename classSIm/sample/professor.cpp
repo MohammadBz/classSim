@@ -108,11 +108,11 @@ void professor::createClass()
     string homeWorkPath = "classDataBase\\" + id + "\\homeWork";
     filesystem::create_directory(homeWorkPath);
 }
+
 void classMenuText()
 {
-    cout << "-----1-add Stduent To class\n-----2-show Student List\n-----3-add HomeWork\n-----4-check HomeWork\n-----5-return to professor Panel\n";
+    cout << "-----1-add Stduent To class\n-----2-remove Student\n-----3-show Student List\n-----4-add HomeWork\n-----5-check HomeWork\n-----6-return to professor Panel\n";
 }
-
 
 void professor::classMenu(string id)
 {
@@ -123,7 +123,7 @@ void professor::classMenu(string id)
     inputClass.loadStudents(id);
     cout << "Please choose by number\n";
     getline(cin, path);
-    while (path.compare("5") != 0)
+    while (path.compare("6") != 0)
     {
         if (path.compare("1") == 0)
         {
@@ -131,19 +131,23 @@ void professor::classMenu(string id)
             inputClass.updateStudentList(id);
             inputClass.loadStudents(id);
         }
-        else if (path.compare("2") == 0)
+        else if(path.compare("2")==0){
+            inputClass.removeStudent();
+        }
+        else if (path.compare("3") == 0)
         {
             inputClass.showStudentList();
         }
-        else if (path.compare("3") == 0)
+        else if (path.compare("4") == 0)
         {
             inputClass.addHomeWork();
             inputClass.updateHomeWorks(id);
             inputClass.loadHomeWorks(id);
         }
-        else if(path.compare("4")==0){
-           inputClass.loadHomeWorks(id);
-           inputClass.checkHomeWork();
+        else if (path.compare("5") == 0)
+        {
+            inputClass.loadHomeWorks(id);
+            inputClass.checkHomeWork();
         }
         classMenuText();
         cout << "Please choose by number\n";
@@ -177,4 +181,81 @@ void professor::chooseClass()
         return;
     } // we continue if it is true
     classMenu(inputId);
+}
+void professor::exitAllLecture()
+{
+    for (int i = 1; i < this->classCounter; i++)
+    {
+        lecture newLec;
+        newLec.loadLectureData(this->listClassName[i]);
+        cout << "for lecture " << newLec.getlectureName() << endl;
+        newLec.changeProfessor("delete", "");
+        newLec.updateLectureData(newLec.getId());
+        i++;
+    }
+}
+void professor::removeClassName(string classid)
+{
+    int index = 0;
+    int i = 0;
+    for (int i = 0; i < this->classCounter; i++)
+    {
+        if (this->listClassName[i].compare(classid) == 0)
+        {
+            index = i;
+            break;
+        }
+    }
+    if (i == this->classCounter)
+    {
+        cout << "you don't participate in that class\n";
+        return;
+    }
+    index--;
+    for (int j = index + 2; j < this->classCounter; j++, index++)
+    {
+        listClassName[index] = listClassName[j];
+    }
+    this->classCounter = this->classCounter - 2;
+}
+string findProfessorOfLecture(string classid, string *nameArr, int nameCount)
+{
+    for (int i = 0; i < nameCount; i++)
+    {
+        string tempId = nameArr[i];
+        if (tempId[0] == '1')
+        { // the user is professor
+            professor temp;
+            temp.loadUserData(tempId);
+            temp.loadClassName(tempId);
+            if (temp.getClassCounter() > 0&&temp.getStatus().compare("active")==0)
+            {
+                string *classList = temp.getListClass();
+                for (int k = 0; k < temp.getClassCounter(); k++)
+                {
+                    if (classList[k].compare(classid) == 0)
+                    {
+                        return temp.getId();
+                    }
+                }
+            }
+        }
+    }
+    return "NULL";
+}
+void professor::restoreAllLecture(string *nameArr, int nameCount)
+{
+    for (int i = 1; i < this->classCounter; i++)
+    {
+        lecture newLec;
+        newLec.loadLectureData(this->listClassName[i]);
+        string oldProfId = findProfessorOfLecture(newLec.getId(), nameArr, nameCount);
+        professor oldProf;
+        oldProf.loadUserData(oldProfId);
+        oldProf.loadClassName(oldProfId);
+        oldProf.removeClassName(newLec.getId());
+        oldProf.writeClassName(oldProfId);
+        newLec.changeProfessor("restore", this->getId());
+        i++;
+    }
 }

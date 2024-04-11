@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include "student.h"
+#include "professor.h"
 #include "homeWork.h"
 
 using namespace std;
@@ -31,11 +32,12 @@ void lecture::addStudent()
     cout << "Please give us the id of student\n";
     getline(cin, inputId);
     student temp;
-    if (temp.loadUserData(inputId) == false)
+    if (temp.loadUserData(inputId) == false || temp.getStatus().compare("inActive") == 0 || this->checkStuExist(inputId) == true)
     {
         cout << "There is no student with this ID\n";
         return;
     }
+    temp.loadClassName(inputId);
     if (this->studentCounter < Max_Student_Size)
     {
         this->listStudents[this->studentCounter] = temp;
@@ -92,9 +94,14 @@ void lecture::showStudentList()
         cout << "there is no student in this class\n";
         return;
     }
+    int counter = 1;
     for (int i = 0; i < this->studentCounter; i++)
     {
-        cout << "student number #" << i + 1 << ":\nfirst name:" << this->listStudents[i].getFirstName() << "\nlast name:" << this->listStudents[i].getLastName() << "\nID:" << this->listStudents[i].getId() << endl;
+        if (listStudents[i].getStatus().compare("inActive") != 0)
+        {
+            cout << "student number #" << counter << ":\nfirst name:" << this->listStudents[i].getFirstName() << "\nlast name:" << this->listStudents[i].getLastName() << "\nID:" << this->listStudents[i].getId() << endl;
+            counter++;
+        }
     }
 }
 void lecture::showHomeWorkList()
@@ -188,7 +195,13 @@ void lecture::loadLectureData(string id)
     }
     inputFile.close();
 }
-
+void lecture::updateLectureData(string inputid)
+{
+    string filePath = "classDataBase\\" + id + "\\basicData.txt";
+    ofstream outputFile(filePath);
+    outputFile << "id:" << this->id << ",nameL:" << this->lectureName << ",nameP:" << this->classProfessor << ",";
+    outputFile.close();
+}
 void lecture::updateStudentList(string id)
 {
     string filePath = "classDataBase\\" + id + "\\listStudents.txt";
@@ -226,13 +239,16 @@ void lecture::updateHomeWorks(string id)
     }
     outputFile.close();
 }
-bool lecture::checkStuExist(string id){
-for(int i=0;i<this->studentCounter;i++){
-    if(listStudents[i].getId().compare(id)==0){
-        return true;
+bool lecture::checkStuExist(string id)
+{
+    for (int i = 0; i < this->studentCounter; i++)
+    {
+        if (listStudents[i].getId().compare(id) == 0)
+        {
+            return true;
+        }
     }
-}
-return false;
+    return false;
 }
 
 void lecture::checkHomeWork()
@@ -257,23 +273,94 @@ void lecture::checkHomeWork()
         return;
     }
     newHw.showAnswersList();
-    cout<<"Do you want to grade anyone?(yes or no)\n";
+    cout << "Do you want to grade anyone?(yes or no)\n";
     string path;
-    getline(cin,path);
-    if(path.compare("yes")==0){
-     cout<<"Give us the id of the student:\n";
-     string idStu;
-     getline(cin,idStu);   
-        if(this->checkStuExist(idStu)==true){
-          cout<<"What is your Grade for this stduent?\n";
-          string gradeInput;
-          getline(cin,gradeInput);
-          newHw.editGrade(this->id,idStu,gradeInput);
-        //  newHw
-        cout<<"edited Successfully\n";
+    getline(cin, path);
+    if (path.compare("yes") == 0)
+    {
+        cout << "Give us the id of the student:\n";
+        string idStu;
+        getline(cin, idStu);
+        if (this->checkStuExist(idStu) == true)
+        {
+            cout << "What is your Grade for this stduent?\n";
+            string gradeInput;
+            getline(cin, gradeInput);
+            newHw.editGrade(this->id, idStu, gradeInput);
+            //  newHw
+            cout << "edited Successfully\n";
         }
-    else {
-        return;
+        else
+        {
+            return;
+        }
     }
 }
+
+void lecture::changeProfessor(string inputPath, string restoreProfId)
+{
+    if (inputPath.compare("delete") == 0)
+    {
+        cout << "who is the new professor of this class?\n";
+        string newProfId;
+        getline(cin, newProfId);
+        professor newProf;
+
+        while (newProf.loadUserData(newProfId) == false || newProf.getStatus().compare("inActive") == 0)
+        {
+            cout << "give us a valid id\n";
+            getline(cin, newProfId);
+        } // if we pass this while then we have a new professor
+        newProf.loadClassName(newProf.getId());
+
+        string fullName = newProf.getFirstName() + "-" + newProf.getLastName();
+        this->setProfessorClass(fullName);
+        newProf.addClassName(this->lectureName);
+        newProf.addClassName(this->id);
+        newProf.writeClassName(newProf.getId());
+    }
+    else if (inputPath.compare("restore") == 0)
+    {
+        professor restoreProf;
+        restoreProf.loadUserData(restoreProfId);
+        restoreProf.loadClassName(restoreProfId);
+        string fullName = restoreProf.getFirstName() + "-" + restoreProf.getLastName();
+        this->setProfessorClass(fullName);
+        this->updateLectureData(this->id);
+    }
+}
+void lecture::removeStudentId(string inputId)
+{
+    int index = 0;
+    for (int i = 0; i < this->studentCounter; i++)
+    {
+        if (this->listStudents[i].getId().compare(inputId) == 0)
+        {
+            index = i;
+            break;
+        }
+    }
+    for(int j=index+1;j<this->studentCounter;j++,index++){
+      this->listStudents[index]=this->listStudents[j];
+    }
+    this->studentCounter=this->studentCounter-1;
+}
+void lecture::removeStudent()
+{
+    cout << "what is the id of the student?\n";
+    string inputId;
+    getline(cin, inputId);
+    if (this->checkStuExist(inputId) == false)
+    {
+        cout << "There is no student with this id in this class\n";
+        return;
+    }
+    this->removeStudentId(inputId);
+    this->updateStudentList(this->id);
+    student tempStu;
+    tempStu.loadUserData(inputId);
+    tempStu.loadClassName(inputId);
+    tempStu.removeClassName(this->id);
+    tempStu.writeClassName(inputId);
+    cout<<tempStu.getFirstName()<<" "<<tempStu.getLastName()<<"have been removed\n";
 }

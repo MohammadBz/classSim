@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <filesystem>
 #include "sample\human.h"
+#include "sample\admin.h"
 
 using namespace std;
 
@@ -170,18 +171,19 @@ human signUp()
     newPerson.setId(idGenerator(temp));
     newPerson.setStatus("active");
     createUserDataFile(newPerson);
-    cout << "Welcome " << newPerson.getFirstName() << " " << newPerson.getLastName() << endl;
     return newPerson;
 }
 // status:<>,firstName:<>,LastName:<>,ID:<>,Password:<>,Role:<>,
-void checkAdmin()
+bool checkAdmin()
 {
     cout << "Please enter your password:\n";
     string temp;
     getline(cin, temp);
-    if(temp.compare("admin123")==0){
-        
+    if(temp.compare("admin*123*")==0){
+    adminMenu();
+    return true;
     }
+    return false;
 }
 human login()
 {
@@ -193,6 +195,9 @@ human login()
     getline(cin, temp);
     if (temp.compare("admin") == 0)
     {
+        if(checkAdmin()==true){
+            return fail;
+        }
     }
     while (checkId(temp) == false)
     {

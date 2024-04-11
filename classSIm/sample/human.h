@@ -29,5 +29,6 @@ public:
     string getStatus();
     void showPersonDetails();
     bool loadUserData(string &id);
+    void updateUserData();
 
 };

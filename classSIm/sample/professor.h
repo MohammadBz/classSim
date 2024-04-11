@@ -23,4 +23,7 @@ public:
     void createClass();
     void classMenu(string id);
     void chooseClass();
+    void exitAllLecture();
+    void restoreAllLecture(string *nameArr,int nameCount);
+    void removeClassName(string classid);
 };

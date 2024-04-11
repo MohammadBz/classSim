@@ -139,7 +139,7 @@ void homeWorkMenu(string hwName, string classId, string stuid)
         }
         else if (path.compare("3") == 0)
         {
-            seeGrade(hwName,classId,stuid);
+            seeGrade(hwName, classId, stuid);
         }
         cout << "\n-----1-Question\n-----2-submit Awnser\n-----3-see your grade\n-----4-return\n";
         getline(cin, path);
@@ -204,4 +204,28 @@ void student::chooseClass()
         return;
     } // we continue if it is true
     classMenu(inputId, this->getId());
+}
+
+void student::removeClassName(string inputClassId)
+{
+    int index = 0;
+    int i = 0;
+    for (int i = 0; i < this->classCounter; i++)
+    {
+        if (this->listClassName[i].compare(inputClassId) == 0)
+        {
+            index = i;
+            break;
+        }
+    }
+    if (i == this->classCounter)
+    {
+        cout << "you don't participate in that class\n";
+        return;
+    }
+    for (int j = index + 2; j < this->classCounter; j++, index++)
+    {
+        listClassName[index] = listClassName[j];
+    }
+    this->classCounter = this->classCounter - 2;
 }

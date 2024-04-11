@@ -21,4 +21,5 @@ public:
     void loadClassName(string id);
     void writeClassName(string id);
     void chooseClass();
+    void removeClassName(string inputClassId);
 };

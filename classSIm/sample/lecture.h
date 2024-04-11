@@ -36,10 +36,14 @@ public:
     void setProfessorClass(string input);
     void setlectureName(string input);
     void loadLectureData(string id);
+    void updateLectureData(string id);
     void loadStudents(string id);
     void updateStudentList(string id);
     void loadHomeWorks(string id);
     void updateHomeWorks(string id);
     void checkHomeWork();
     bool checkStuExist(string id);
+    void changeProfessor(string inputPath,string restoreProfId);
+    void removeStudent();
+    void removeStudentId(string inputId);
 };

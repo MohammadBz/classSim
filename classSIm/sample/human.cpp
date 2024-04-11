@@ -55,8 +55,9 @@ string human::getStatus()
 {
     return this->status;
 }
-void human::showPersonDetails(){
-    cout<<"--------------------\nfull name:"<<this->firstName<<" "<<this->lastName<<"\nID:"<<this->id<<"\nYour Role is:"<<this->role<<endl;
+void human::showPersonDetails()
+{
+    cout << "--------------------\nfull name:" << this->firstName << " " << this->lastName << "\nID:" << this->id<< endl;
 }
 
 bool human::loadUserData(string &id)
@@ -87,27 +88,27 @@ bool human::loadUserData(string &id)
 
                 if (attr == "status")
                 {
-                    this->status=value;
+                    this->status = value;
                 }
                 else if (attr == "firstName")
                 {
-                    this->firstName=value;
+                    this->firstName = value;
                 }
                 else if (attr == "lastName")
                 {
-                    this->lastName=value;
+                    this->lastName = value;
                 }
                 else if (attr == "ID")
                 {
-                    this->id=value;
+                    this->id = value;
                 }
                 else if (attr == "Password")
                 {
-                   this->password=value;
+                    this->password = value;
                 }
                 else if (attr == "Role")
                 {
-                    this->role=value;
+                    this->role = value;
                 }
             }
         }
@@ -115,4 +116,15 @@ bool human::loadUserData(string &id)
     inputFile.close();
     return true;
 }
-
+void human::updateUserData()
+{
+    string filePath = "userDataBase\\" + id + "\\UserData.txt";
+    ofstream outputFile(filePath);
+    outputFile << "status:" << this->getStatus() << ",";
+    outputFile << "firstName:" << this->getFirstName() << ",";
+    outputFile << "lastName:" << this->getLastName() << ",";
+    outputFile << "ID:" << this->getId() << ",";
+    outputFile << "Password:" << this->getPassword() << ",";
+    outputFile << "Role:" << this->getRole() << ",";
+    outputFile.close();
+}

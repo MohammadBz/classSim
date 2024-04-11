@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 #include "sample\lecture.h"
 #include "sample\student.h"
 #include "sample\human.h"
@@ -35,7 +36,12 @@ void menu()
     if (path.compare("1") == 0)
     {
       human temp = signUp();
-      if (temp.getRole().compare("professor") == 0)
+      cout << "Welcome " << temp.getFirstName() << " " << temp.getLastName() << endl;
+      if (temp.getStatus().compare("inActive") == 0)
+      {
+        cout << "Your account is inActive please contact admin\n";
+      }
+      else if (temp.getRole().compare("professor") == 0)
       {
         professorMenu(temp);
       }
@@ -47,7 +53,11 @@ void menu()
     else if (path.compare("2") == 0)
     {
       human temp = login();
-      if (temp.getRole().compare("professor") == 0)
+      if (temp.getStatus().compare("inActive") == 0)
+      {
+        cout << "Your account is inActive please contact admin\n";
+      }
+      else if (temp.getRole().compare("professor") == 0)
       {
         professorMenu(temp);
       }
@@ -68,23 +78,7 @@ void menu()
 
 int main()
 {
-  /*     student ali;
-      ali.setfirstName("ali");
-      ali.setLastName("ghol");
-      student popo;
-      popo.setfirstName("poria");
-      popo.setLastName("schafsyacfysac");
-      professor omidi;
-      omidi.setfirstName("gholam");
-      omidi.setLastName("omidi");
-      string omidiFullName=omidi.getFirstName()+omidi.getLastName();
-      lecture firstClass("physics 1",omidiFullName);
-      omidi.addClass(firstClass.getlectureName());
-      firstClass.addStudent(ali);
-      firstClass.addStudent(popo);
-      firstClass.showStudentList();
-      ali.addClass(firstClass.getlectureName());
-      ali.showClassList(); */
+  system("color 0a");
   menu();
   return 0;
 }
